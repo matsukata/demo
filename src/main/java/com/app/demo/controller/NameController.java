@@ -1,7 +1,7 @@
 package com.app.demo.controller;
 
 import com.app.demo.model.RestName;
-import com.app.demo.service.ServiceImpl;
+import com.app.demo.service.NameServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +14,10 @@ import java.util.List;
 @RestController
 public class NameController {
 
-    private final ServiceImpl service;
+    private final NameServiceImpl service;
 
     @Autowired
-    public NameController(ServiceImpl service) {
+    public NameController(NameServiceImpl service) {
         this.service = service;
     }
 
@@ -25,16 +25,7 @@ public class NameController {
     public ResponseEntity<?> create(@RequestBody RestName restName) {
         List<String> list = restName.getList();
         String order = restName.getOrder();
-        service.create(list, order);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PostMapping(value = "/read")
-    public ResponseEntity<List<String>> read() {
-        final List<String> names = service.readAll();
-
-        return names != null & !names.isEmpty() ?
-                new ResponseEntity<>(names, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<String> transformedNames = service.create(list, order);
+        return new ResponseEntity<>(transformedNames, HttpStatus.CREATED);
     }
 }
